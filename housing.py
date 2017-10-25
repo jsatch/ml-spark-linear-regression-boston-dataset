@@ -85,6 +85,15 @@ def evaluate_model_regression(data, label_col, prediction_col='prediction', metr
     evaluator = RegressionEvaluator(labelCol=label_col, metricName=metric, predictionCol=prediction_col)
     print( "{}:{}".format(metric,evaluator.evaluate(data)))
 
+def plot_linear(data, feature_x, feature_y):
+    import matplotlib.pyplot as plt
+    arr_x = data.select(feature_x).rdd.collect()
+    arr_y = data.select(feature_y).rdd.collect()
+    plt.scatter(arr_x, arr_y)
+    plt.xlabel(feature_x)
+    plt.ylabel(feature_y)
+    plt.show()
+
 def main():
     sc = init()
     spark = SparkSession(sc)
@@ -108,7 +117,8 @@ def main():
         lr_model.transform(test_data_to_validate).select("features", "NOX", "prediction"),
         'NOX', 'prediction', 'rmse')
     
-
+    # Para plotear dos variables
+    plot_linear(train_data, 'CRIM', 'MEDV')
 
 if __name__ == "__main__":
     main()
